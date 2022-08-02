@@ -1,8 +1,8 @@
 package clock;
 
 import java.util.Calendar;
-import java.util.Observable;
 import java.util.GregorianCalendar;
+import java.util.Observable;
 
 public class Model extends Observable {
     
