@@ -1,15 +1,15 @@
 package clock;
 
-import queuemanager.QueueOverflowException;
-import queuemanager.SortedArrayPriorityQueue;
-
-import javax.swing.*;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Observable;
+
+import javax.swing.JOptionPane;
+
+import queuemanager.QueueOverflowException;
+import queuemanager.SortedArrayPriorityQueue;
 
 public class Model extends Observable {
     
