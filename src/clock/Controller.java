@@ -1,6 +1,7 @@
 package clock;
 
 import java.awt.event.*;
+
 import javax.swing.Timer;
 
 public class Controller {
@@ -23,5 +24,4 @@ public class Controller {
         
         timer = new Timer(100, listener);
         timer.start();
-    }
-}
+    }}
