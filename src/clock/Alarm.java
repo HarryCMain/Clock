@@ -1,9 +1,16 @@
 package clock;
 
 import javax.swing.*;
+
+import java.beans.Transient;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimerTask;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 
 
 public class Alarm extends TimerTask {
@@ -66,6 +73,16 @@ public class Alarm extends TimerTask {
     public Date getAlarmdatetime() {
         return alarmdatetime;
     }
+
+    @Test 
+    
+    public void testAlarm(){
+        Date alarm = new Date();
+        Alarm alarm1 = new Alarm(alarm);
+        System.out.println(alarm1.getAlarmical());
+        assertEquals(alarm1.getAlarmical(),new SimpleDateFormat("yyyyMMdd").format(alarmdatetime) + "T" + String.valueOf(new SimpleDateFormat("HHmmss").format(alarmdatetime) + "Z"));
+    }
+
 
     //abbandoned implementation
 /* 
