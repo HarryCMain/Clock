@@ -1,22 +1,26 @@
 package clock;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.awt.font.*;
 
-Public class About extends JPanel {
+public class About extends JDialog {
 
-    public About {
-        JFrame frame = new JFrame();
-        frame.setTitle("About");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(200, 200));
-        setBackground(Color.white);
-        l = new JLabel("About......");
-        JPanel p = new JPanel();
-        p.add(l);
-        frame.add(p);
+    public About() {
+        setTitle("About");
+        setSize(300, 200);
+        setLocationRelativeTo(null); // Center the window
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel label = new JLabel("<html><center>Java Clock Application<br>Version 2.0<br>© 2025</center></html>", SwingConstants.CENTER);
+        panel.add(label, BorderLayout.CENTER);
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> dispose());
+        panel.add(closeButton, BorderLayout.SOUTH);
+
+        add(panel);
     }
-
 }

@@ -1,21 +1,20 @@
 package clock;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.awt.font.*;
 import javax.swing.*;
 
 public abstract class ClockPanel extends JPanel {
-    Model model;
-    Graphics g;
+
+    protected Model model;
 
     public ClockPanel(Model model) {
         this.model = model;
-        setPreferredSize(new Dimension(200, 200));
-        setBackground(Color.white);
+        setPreferredSize(new Dimension(300, 300)); // Set a reasonable default size
+        setBackground(Color.WHITE); // Set a default background color
     }
-    
-  //  public abstract void paintComponent(Graphics g);
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g); // Ensure the panel is properly rendered
+    }
 }

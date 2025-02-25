@@ -1,104 +1,61 @@
 package clock;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.geom.*;
-import java.awt.font.*;
 import javax.swing.*;
 
-public class AnalogClockPanel extends ClockPanel{  
-    
-    Model model;
+public class AnalogClockPanel extends JPanel {
 
-    
-    public AnalogClockPanel(Model m) {
-       super (m);
-         model = m;
+    private Model model;
+
+    public AnalogClockPanel(Model model) {
+        this.model = model;
+        setPreferredSize(new Dimension(300, 300));
+        setBackground(Color.WHITE);
     }
-    
-    public void paintComponent(Graphics g) {
+
+    @Override
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Rectangle bounds = getBounds();
-        //System.out.println(bounds);
-        
-        Graphics2D gg = (Graphics2D) g;
-        int x0 = bounds.width / 2;
-        int y0 = bounds.height / 2;
-        
-        int size = Math.min(x0, y0);
-        //gg.translate(x0, y0);
-        //gg.scale(size, size);
-        //gg.setStroke(new BasicStroke(0));
-        
-        gg.setStroke(new BasicStroke(1));
-        
-        // gg.draw(new Ellipse2D.Double(-1, -1, 2, 2));
-        
-        double radius = 0;
-        double theta = 0;
-        
-        // Draw the tick marks around the outside
-        for (int n = 0; n < 60; n++) {
-            theta = (90 - n * 6) / (180 / Math.PI);
-            if (n % 5 == 0) {
-                radius = 0.65 * size;
-            } else {
-                radius = 0.7 * size;
-            }
-            double x1 = x0 + radius * Math.cos(theta);
-            double y1 = y0 - radius * Math.sin(theta);
-            radius = 0.75 * size;
-            double x2 = x0 + radius * Math.cos(theta);
-            double y2 = y0 - radius * Math.sin(theta);
-            gg.draw(new Line2D.Double(x1, y1, x2, y2));
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        int width = getWidth();
+        int height = getHeight();
+        int centerX = width / 2;
+        int centerY = height / 2;
+        int radius = Math.min(centerX, centerY) - 10;
+
+        // Draw the clock face
+        g2d.setColor(Color.BLACK);
+        g2d.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
+
+        // Draw the tick marks and numbers
+        for (int i = 1; i <= 12; i++) {
+            double angle = Math.toRadians(90 - i * 30);
+            int x = (int) (centerX + Math.cos(angle) * (radius - 20));
+            int y = (int) (centerY - Math.sin(angle) * (radius - 20));
+            g2d.drawString(Integer.toString(i), x, y);
         }
-        
-        // Draw the numbers
-        // Font font = new Font("SansSerif", Font.BOLD, size / 5);
-        Font font = new Font("SansSerif", Font.PLAIN, size / 5);
-        gg.setFont(font);
-        for (int n = 1; n <= 12; n++) {
-            theta = (90 - n * 30) / (180 / Math.PI);
-            radius = 0.9 * size;
-            double x1 = x0 + radius * Math.cos(theta);
-            double y1 = y0 - radius * Math.sin(theta);
-            String s = "" + n;
-            // To centre the numbers on their places, we need to get
-            // the exact dimensions of the box
-            FontRenderContext context = gg.getFontRenderContext();
-            Rectangle2D msgbounds = font.getStringBounds(s, context);
-            double ascent = -msgbounds.getY();
-            double descent = msgbounds.getHeight() + msgbounds.getY();
-            double height = msgbounds.getHeight();
-            double width = msgbounds.getWidth();
-            
-            gg.drawString(s, (new Float(x1 - width/2)).floatValue(), 
-                          (new Float(y1 + height/2 - descent)).floatValue());
-        }
-        
+
         // Draw the hour hand
-        gg.setStroke(new BasicStroke(2.0f));
-        theta = (90 - (model.hour + model.minute / 60.0) * 30) / (180 / Math.PI);
-        radius = 0.5 * size;
-        double x1 = x0 + radius * Math.cos(theta);
-        double y1 = y0 - radius * Math.sin(theta);
-        gg.draw(new Line2D.Double(x0, y0, x1, y1));
-        
+        double hourAngle = Math.toRadians(90 - (model.hour + model.minute / 60.0) * 30);
+        drawHand(g2d, centerX, centerY, hourAngle, (int) (radius * 0.5), 4, Color.BLACK);
+
         // Draw the minute hand
-        gg.setStroke(new BasicStroke(1.1f));
-        theta = (90 - (model.minute + model.second / 60.0) * 6) / (180 / Math.PI);
-        radius = 0.75 * size;
-        x1 = x0 + radius * Math.cos(theta);
-        y1 = y0 - radius * Math.sin(theta);
-        gg.draw(new Line2D.Double(x0, y0, x1, y1));
-        
+        double minuteAngle = Math.toRadians(90 - (model.minute + model.second / 60.0) * 6);
+        drawHand(g2d, centerX, centerY, minuteAngle, (int) (radius * 0.75), 2, Color.BLUE);
+
         // Draw the second hand
-        gg.setColor(Color.red);
-        gg.setStroke(new BasicStroke(0));
-        theta = (90 - model.second * 6) / (180 / Math.PI);
-        x1 = x0 + radius * Math.cos(theta);
-        y1 = y0 - radius * Math.sin(theta);
-        gg.draw(new Line2D.Double(x0, y0, x1, y1));
+        double secondAngle = Math.toRadians(90 - model.second * 6);
+        drawHand(g2d, centerX, centerY, secondAngle, (int) (radius * 0.9), 1, Color.RED);
     }
 
+    private void drawHand(Graphics2D g2d, int centerX, int centerY, double angle, int length, int thickness, Color color) {
+        int x = (int) (centerX + Math.cos(angle) * length);
+        int y = (int) (centerY - Math.sin(angle) * length);
+        g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(thickness));
+        g2d.drawLine(centerX, centerY, x, y);
+    }
 }

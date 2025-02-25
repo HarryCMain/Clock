@@ -3,119 +3,67 @@ package clock;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.*;
-import java.util.Observer;
-import java.util.Observable;
 
-public class View implements Observer {
-    
-    AnalogClockPanel panel;
-    static JMenuBar mb;
- 
 
-    // JMenu
-    static JMenu x;
-    static JMenuItem m1, m2, m3,m4,m5;
+public class View implements PropertyChangeListener {
 
-    public void setAbout() {
-        JLabel label=new JLabel("About......");
-        JPanel p = new JPanel();
-        p.add(label);
-        JFrame frameabout = new JFrame();
-        frameabout.add(p);
-        frameabout.pack();
-        frameabout.setVisible(true);
-    }
-
+    private AnalogClockPanel panel;
+    private JFrame frame;
 
     public View(Model model) {
-        JFrame frame = new JFrame();
-        panel = new AnalogClockPanel(model);
-        //frame.setContentPane(panel);
-        frame.setTitle("Java Clock");
+        // Create the main frame
+        frame = new JFrame("Java Clock");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // Start of border layout code
-        
-        // I've just put a single button in each of the border positions:
-        // PAGE_START (i.e. top), PAGE_END (bottom), LINE_START (left) and
-        // LINE_END (right). You can omit any of these, or replace the button
-        // with something else like a label or a menu bar. Or maybe you can
-        // figure out how to pack more than one thing into one of those
-        // positions. This is the very simplest border layout possible, just
-        // to help you get started.
-        
-        Container pane = frame.getContentPane();
+        frame.setSize(400, 400);
+        frame.setLayout(new BorderLayout());
 
-        mb = new JMenuBar();
- 
-        // create a menu
-        x = new JMenu("Menu");
-        m1 = new JMenuItem("about");
-        m2 = new JMenuItem("MenuItem2");
-        m3 = new JMenuItem("MenuItem3");
-        m4 = new JMenuItem("MenuItem4");
-        m5 = new JMenuItem("MenuItem5");
+        // Create the clock panel
+        panel = new AnalogClockPanel(model);
+        frame.add(panel, BorderLayout.CENTER);
 
-        m1.addActionListener(new ActionListener() {
+        // Create the menu bar
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Menu");
+
+        // Add "About" menu item
+        JMenuItem aboutMenuItem = new JMenuItem("About");
+        aboutMenuItem.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("About");
-                setAbout();
+                new About().setVisible(true);
             }
         });
+        menu.add(aboutMenuItem);
 
-           // add menu items to menu
-           x.add(m1);
-           x.add(m2);
-           x.add(m3);
-           x.add(m4);
-           x.add(m5);
+        // Add other menu items (placeholder)
+        menu.add(new JMenuItem("Settings"));
+        menu.add(new JMenuItem("Help"));
 
-        // add menu to menu bar
-        mb.add(x);
- 
-        // add menubar to frame
-        frame.setJMenuBar(mb);
- 
-        
-        JButton button = new JButton("Button 1 (PAGE_START)");
-        
+        menuBar.add(menu);
+        frame.setJMenuBar(menuBar);
 
-        JButton about = new JButton("About");
-        pane.add(about, BorderLayout.PAGE_START);
-            about.addActionListener(new ActionListener() {
+        // Add a button for demonstration
+        JButton aboutButton = new JButton("About");
+        aboutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new About().setVisible(true);
+            }
+        });
+        frame.add(aboutButton, BorderLayout.SOUTH);
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("About");
-                    setAbout();
-                }
-            });
+        // Register the view as a listener to the model
+        model.addPropertyChangeListener(this);
 
-
-
-
-         
-        panel.setPreferredSize(new Dimension(200, 200));
-        pane.add(panel, BorderLayout.CENTER);
-         
-        button = new JButton("Button 3 (LINE_START)");
-        pane.add(button, BorderLayout.LINE_START);
-         
-        button = new JButton("Long-Named Button 4 (PAGE_END)");
-        pane.add(button, BorderLayout.PAGE_END);
-         
-        button = new JButton("5 (LINE_END)");
-        pane.add(button, BorderLayout.LINE_END);
-        
-        // End of borderlayout code
-        
-        frame.pack();
+        // Display the frame
         frame.setVisible(true);
     }
-    
-    public void update(Observable o, Object arg) {
-        panel.repaint();
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        panel.repaint(); // Refresh the clock panel
     }
 }

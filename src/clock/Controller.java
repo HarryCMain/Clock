@@ -1,27 +1,24 @@
 package clock;
 
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 public class Controller {
-    
-    ActionListener listener;
-    Timer timer;
-    
-    Model model;
-    View view;
-    
-    public Controller(Model m, View v) {
-        model = m;
-        view = v;
-        
-        listener = new ActionListener() {
+
+    private Timer timer;
+    private Model model;
+
+    public Controller(Model model, View view) {
+        this.model = model;
+
+        // Update the model every 100 milliseconds
+        timer = new Timer(100, new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 model.update();
             }
-        };
-        
-        timer = new Timer(100, listener);
+        });
         timer.start();
     }
 }
