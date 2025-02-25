@@ -14,7 +14,7 @@ public class About extends JDialog {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JLabel label = new JLabel("<html><center>Java Clock Application<br>Version 2.0<br>© 2025</center></html>", SwingConstants.CENTER);
+        JLabel label = new JLabel("<html><center>Java Clock Application<br>Version 2.0<br>© Harry Booth-Main: 2025</center></html>", SwingConstants.CENTER);
         panel.add(label, BorderLayout.CENTER);
 
         JButton closeButton = new JButton("Close");
